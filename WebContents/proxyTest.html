@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ProxyTest</title>
+  
+</head>
+<body>
+  <input type="text" id="textfield" value="hello" autocomplete="off"/>
+  <input type="button" value="Press Me!" onclick="sendInfo();"/>
+
+  <br/>
+
+  Output: <br/>
+  <span id="out"></span>
+
+  <script type="text/javascript" charset="utf-8">
+    var g_xmlhttp;
+
+    function sendInfo()
+    {
+      g_xmlhttp = new XMLHttpRequest();
+
+      g_xmlhttp.onreadystatechange=handleResponse;
+
+      g_xmlhttp.open("GET", "suggest?q=" + 
+          document.getElementById("textfield").value); 
+
+      g_xmlhttp.send(null);
+    }
+
+    function handleResponse()
+    {
+      if (g_xmlhttp.readyState == 4)
+      {
+        var returnedInfo = "";
+        var suggestionNodes = g_xmlhttp.responseXML.documentElement.children;
+        var suggestedText;
+        var numQueries;
+
+        for (var ii = 0; ii < suggestionNodes.length; ii++)
+        {
+          suggestedText = suggestionNodes[ii].children[0].attributes[0].value;
+          numQueries    = suggestionNodes[ii].children[1].attributes[0].value;
+
+          returnedInfo += ("<b>" + suggestedText + "</b> " + 
+                           numQueries + "<br/>");
+        }
+
+        document.getElementById("out").innerHTML=returnedInfo;
+      }
+    }
+  </script>
+
+</body>
+</html>
